@@ -1,15 +1,13 @@
 {
-  "name": "php-version-manager",
+  "name": "php-version-switcher",
   "version": "1.0.0",
-  "description": "",
+  "description": "PHP Version Switcher for Brew installs of PHP Edit",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC",
+  "author": "Owen Melbourne",
+  "license": "MIT",
   "dependencies": {
     "inquirer": "^3.0.1",
+    "shelljs": "^0.7.6",
     "underscore": "^1.8.3"
   }
 }
