@@ -1,10 +1,19 @@
 {
   "name": "php-version-switcher",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "PHP Version Switcher for Brew installs of PHP Edit",
+  "homepage": "https://github.com/OwenMelbz/pvs",
   "main": "index.js",
+  "bin": {
+    "pvs": "./index.js"
+  },
   "author": "Owen Melbourne",
   "license": "MIT",
+  "keywords": [
+      "selesti",
+      "php",
+      "version"
+  ],
   "dependencies": {
     "inquirer": "^3.0.1",
     "shelljs": "^0.7.6",
