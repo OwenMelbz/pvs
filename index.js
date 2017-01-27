@@ -1,3 +1,7 @@
+#!/usr/bin/env node
+
+'use strict';
+
 const inquire = require('inquirer').createPromptModule();
 const _ = require('underscore');
 const S = require('cli-spinner').Spinner;

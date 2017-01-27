@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "PHP Version Switcher for Brew installs of PHP",
   "homepage": "https://github.com/OwenMelbz/pvs",
+  "repository": "https://github.com/OwenMelbz/pvs.git",
   "main": "index.js",
   "bin": {
     "pvs": "./index.js"
