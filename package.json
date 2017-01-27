@@ -1,7 +1,7 @@
 {
   "name": "php-version-switcher",
   "version": "0.0.1",
-  "description": "PHP Version Switcher for Brew installs of PHP Edit",
+  "description": "PHP Version Switcher for Brew installs of PHP",
   "homepage": "https://github.com/OwenMelbz/pvs",
   "main": "index.js",
   "bin": {
