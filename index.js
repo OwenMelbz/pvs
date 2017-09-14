@@ -87,7 +87,7 @@ const activateChosenVersion = () => {
         return activate();
     } else {
         spinner.setSpinnerTitle(myChoice.name + ' is not installed - installing now (this could take a while)');
-        exec(`brew install ${myChoice.value} ${myChoice.value}-mcrypt ${myChoice.value}-xdebug ${myChoice.value}-imagick ${myChoice.value}-intl`, {silent: true}, function(){
+        exec(`brew install ${myChoice.value} ${myChoice.value}-mcrypt ${myChoice.value}-xdebug ${myChoice.value}-intl && brew install -s ${myChoice.value}-imagick`, {silent: true}, function(){
             spinner.setSpinnerTitle(myChoice.name + ' now installed');
             activate();
         });
