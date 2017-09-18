@@ -8,6 +8,7 @@ const S = require('cli-spinner').Spinner;
 require('shelljs/global');
 
 const choices = [
+    {name: 'PHP 5.3', value: 'php53'},
     {name: 'PHP 5.4', value: 'php54'},
     {name: 'PHP 5.5', value: 'php55'},
     {name: 'PHP 5.6', value: 'php56'},
