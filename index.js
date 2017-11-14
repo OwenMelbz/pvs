@@ -4,17 +4,21 @@
 
 const inquire = require('inquirer').createPromptModule();
 const _ = require('underscore');
+const fs = require('fs');
+const readline = require('readline');
 const S = require('cli-spinner').Spinner;
 require('shelljs/global');
 
 const choices = [
     {name: 'PHP 5.3', value: 'php53'},
     {name: 'PHP 5.4', value: 'php54'},
-    {name: 'PHP 5.5', value: 'php55'},
     {name: 'PHP 5.6', value: 'php56'},
     {name: 'PHP 7', value: 'php70'},
-    {name: 'PHP 7.1', value: 'php71'}
+    {name: 'PHP 7.1', value: 'php71'},
+    {name: 'PHP 7.2', value: 'php72'},
 ];
+
+const httpConfigPath = '/usr/local/etc/httpd/httpd.conf';
 
 let myChoice = _.first(choices);
 let hasChoiceInstalled = false;
@@ -30,13 +34,13 @@ const parseAnswers = (answers) => {
     });
 
     if (myChoice) {
-        deactiveActiveVersion(activateChosenVersion);
+        deactiveActiveVersion();
     } else {
         return console.error('No valid version found');
     }
 };
 
-const deactiveActiveVersion = (next) => {
+const deactiveActiveVersion = () => {
 
     spinner.setSpinnerTitle('Stopping existing PHP instances, and removing symlinks');
 
@@ -65,15 +69,57 @@ const deactiveActiveVersion = (next) => {
             }
         });
 
-        return next();
+        return activateChosenVersion();
     });
 };
 
 const activateChosenVersion = () => {
 
-    spinner.setSpinnerTitle('Searching for existing installs');
+    spinner.setSpinnerTitle('Migrating apache configs to ' + myChoice.name);
 
-    let activate = function(){
+    let activate = function () {
+        changeHttpdConfig();
+    };
+
+    let changeHttpdConfig = function () {
+        const rl = readline.createInterface({
+            input: fs.createReadStream(httpConfigPath),
+            crlfDelay: Infinity
+        });
+
+        let newConfig = [];
+
+        rl.on('line', line => {
+            if (line.indexOf('LoadModule php') === -1) {
+                return newConfig.push(line);
+             }
+
+            let newLine = line;
+
+            newLine = line.replace('#LoadModule', 'LoadModule');
+            newLine = newLine.replace('LoadModule', '#LoadModule');
+
+            if (newLine.indexOf(myChoice.value) !== -1) {
+                newLine = line.replace('#LoadModule', 'LoadModule');
+            }
+
+            return newConfig.push(newLine);
+        }).on('close', () => {
+            const config = newConfig.join('\n');
+
+            spinner.setSpinnerTitle('Saving new httpd config');
+
+            fs.writeFile(httpConfigPath, config, err => {
+                spinner.setSpinnerTitle('Restarting apache');
+                exec('brew services restart httpd', {silent: true});
+
+                return changeBrewLinks();
+            });
+        });
+    };
+
+    let changeBrewLinks = function () {
+
         exec(`brew link ${myChoice.value} && brew services start ${myChoice.value}`, {silent: true}, function(){
             spinner.setSpinnerTitle(myChoice.name + ' Activated!');
 
@@ -88,7 +134,7 @@ const activateChosenVersion = () => {
         return activate();
     } else {
         spinner.setSpinnerTitle(myChoice.name + ' is not installed - installing now (this could take a while)');
-        exec(`brew install ${myChoice.value} ${myChoice.value}-mcrypt ${myChoice.value}-xdebug ${myChoice.value}-intl && brew install -s ${myChoice.value}-imagick`, {silent: true}, function(){
+        exec(`brew install ${myChoice.value} --with-httpd ${myChoice.value}-mcrypt ${myChoice.value}-xdebug ${myChoice.value}-intl && brew install -s ${myChoice.value}-imagick`, {silent: true}, function(){
             spinner.setSpinnerTitle(myChoice.name + ' now installed');
             activate();
         });
