@@ -1,5 +1,5 @@
 # PHP Version Switcher for Brew installs of PHP
-This is a really super simple basic no frills PHP version switcher for people who have PHP installed via Homebrew.
+This is a really super simple basic no frills PHP version switcher for people who have PHP installed via Homebrew and linked to Apache via httpd and apache modules.
 
 # Installation
 - Simply `npm install php-version-switcher -g`
